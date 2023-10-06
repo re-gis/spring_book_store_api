@@ -42,7 +42,7 @@ public class Review {
 
     public void setRating(int rating) {
         if (rating > 5 || rating < 1) {
-            throw new Error("Reviews must be between 1 and 5");
+            throw new Error("Rating must be between 1 and 5");
         }
         this.rating = rating;
     }

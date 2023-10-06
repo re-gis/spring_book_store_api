@@ -44,7 +44,7 @@ public class Book {
     private @NotBlank String description;
 
     @Column
-    private @NotBlank LocalDate publishedDate = LocalDate.now();
+    private LocalDate publishedDate = LocalDate.now();
 
     @Column
     private Long stock;

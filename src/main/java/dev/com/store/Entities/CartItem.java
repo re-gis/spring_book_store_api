@@ -38,6 +38,8 @@ public class CartItem {
 
     @Column
     private int quantity;
+    
+    private BigDecimal price;
 
     @Transient
     public BigDecimal getTotalPrice() {

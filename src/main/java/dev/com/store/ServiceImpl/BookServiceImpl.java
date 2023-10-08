@@ -59,7 +59,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> findBooksByAuthor(String author) throws NotFoundException {
         List<Book> books = bookRepo.findByAuthorContainingIgnoreCase(author);
-        if(books.isEmpty()) {
+        if (books.isEmpty()) {
             throw new NotFoundException();
         }
         return books;

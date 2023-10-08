@@ -65,13 +65,15 @@ public class BookController {
     }
 
     @PutMapping("/stock/update/{id}")
-    public ResponseEntity<String> updateBookStock(@PathVariable("id") Long id, @RequestBody Long newStock) throws NotFoundException {
+    public ResponseEntity<String> updateBookStock(@PathVariable("id") Long id, @RequestBody Long newStock)
+            throws NotFoundException {
         return ResponseEntity.ok(bookServiceImpl.updateBookStock(id, newStock));
     }
 
     @PostMapping("/rating/add")
     public ResponseEntity<Review> addRating(@RequestBody AddRatingDto dto) throws NotFoundException {
-        return ResponseEntity.ok(booServiceImpl.add)
+        return ResponseEntity
+                .ok(bookServiceImpl.addRating(dto.getBookId(), dto.getRating(), dto.getContent(), dto.getUser()));
     }
 
 }

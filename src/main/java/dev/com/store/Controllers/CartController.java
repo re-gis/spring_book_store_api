@@ -23,7 +23,7 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping("/add")
-    public ResponseEntity<String> addToCart(@RequestBody AddToCartDto dto) throws NotFoundException {
+    public ResponseEntity<String> addToCart(@RequestBody AddToCartDto dto) throws NotFoundException, Exception {
         return ResponseEntity.ok(cartService.addBookToCart(dto.getBookId(), dto.getQuantity()));
     }
 

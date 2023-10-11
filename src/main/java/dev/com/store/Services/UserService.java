@@ -1,8 +1,8 @@
 package dev.com.store.Services;
 
-import org.springframework.stereotype.Service;
 
-@Service
-public class UserService {
-    
+import dev.com.store.Entities.User;
+
+public interface UserService {
+    User getLoggedInUser() throws Exception; 
 }

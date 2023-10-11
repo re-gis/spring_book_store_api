@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import dev.com.store.Entities.Book;
 import dev.com.store.Entities.Cart;
 import dev.com.store.Entities.CartItem;
+import dev.com.store.Entities.User;
 import dev.com.store.Repository.BookRepo;
 import dev.com.store.Repository.CartItemRepo;
 import dev.com.store.Repository.CartRepo;
@@ -20,9 +21,12 @@ public class CartServiceImp implements CartService {
     private final CartRepo cartRepo;
     private final CartItemRepo cartItemRepo;
     private final BookRepo bookRepo;
+    private final UserServiceImpl userServiceImpl;
 
-    public String addBookToCart(Long bookId, int quantity) throws NotFoundException {
+    public String addBookToCart(Long bookId, int quantity) throws Exception, NotFoundException {
         Cart cart = new Cart();
+        User loggedUser = userServiceImpl.getLoggedInUser();
+        cart.setUser(loggedUser);
         Book book = bookRepo.findById(bookId).orElseThrow(() -> new NotFoundException());
         // create cartItem
         CartItem cartItem = new CartItem();
@@ -30,8 +34,9 @@ public class CartServiceImp implements CartService {
         cartItem.setCart(cart);
         cartItem.setQuantity(quantity);
         cartItem.setPrice(cartItem.getTotalPrice());
+        cart.addCartItem(cartItem);
 
-        cartRepo.save(cartItem);
+        cartRepo.save(cart);
         return "Item added to cart...";
     }
 
@@ -41,7 +46,8 @@ public class CartServiceImp implements CartService {
         return cart.getCartItems();
     }
 
-    // public CartItem getOneCartItem(Long cartId, Long cartItemId) throws NotFoundException {
+    // public CartItem getOneCartItem(Long cartId, Long cartItemId) throws
+    // NotFoundException {
 
     // }
 

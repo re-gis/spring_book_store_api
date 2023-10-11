@@ -7,7 +7,7 @@ import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import dev.com.store.Entities.CartItem;
 
 public interface CartService {
-    String addBookToCart(Long bookId, int quantity) throws NotFoundException;
+    String addBookToCart(Long bookId, int quantity) throws NotFoundException, Exception;
 
     List<CartItem> getCartItems(Long cartId) throws NotFoundException;
 

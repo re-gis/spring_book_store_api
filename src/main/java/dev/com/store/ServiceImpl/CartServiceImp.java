@@ -21,7 +21,7 @@ public class CartServiceImp implements CartService {
     private final CartItemRepo cartItemRepo;
     private final BookRepo bookRepo;
 
-    public CartItem addBookToCart(Long bookId, int quantity) throws NotFoundException {
+    public String addBookToCart(Long bookId, int quantity) throws NotFoundException {
         Cart cart = new Cart();
         Book book = bookRepo.findById(bookId).orElseThrow(() -> new NotFoundException());
         // create cartItem
@@ -30,16 +30,21 @@ public class CartServiceImp implements CartService {
         cartItem.setCart(cart);
         cartItem.setQuantity(quantity);
         cartItem.setPrice(cartItem.getTotalPrice());
+
+        cartRepo.save(cartItem);
+        return "Item added to cart...";
     }
 
     public List<CartItem> getCartItems(Long cartId) throws NotFoundException {
-
+        // get the cart
+        Cart cart = cartRepo.findById(cartId).orElseThrow(() -> new NotFoundException());
+        return cart.getCartItems();
     }
 
-    public CartItem getOneCartItem(Long cartId, Long cartItemId) throws NotFoundException {
+    // public CartItem getOneCartItem(Long cartId, Long cartItemId) throws NotFoundException {
 
-    }
+    // }
 
-    public String removeBookFromCart(Long bookId) throws NotFoundException {
-    }
+    // public String removeBookFromCart(Long bookId) throws NotFoundException {
+    // }
 }

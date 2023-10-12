@@ -8,13 +8,14 @@ import dev.com.store.Entities.Book;
 import dev.com.store.Entities.Review;
 import dev.com.store.Entities.User;
 import dev.com.store.dtos.CreateBookDto;
+import dev.com.store.payload.ApiResponse;
 
 public interface BookService {
     List<Book> findAllBooks() throws NotFoundException;
 
     Book findBookById(Long id) throws NotFoundException;
 
-    Book saveBook(CreateBookDto book);
+    ApiResponse saveBook(CreateBookDto book);
 
     String deleteBook(Long id) throws NotFoundException;
 
@@ -28,5 +29,5 @@ public interface BookService {
 
     Long getBookStock(Long bookId) throws NotFoundException;
 
-    Review addRating(Long bookId, int rating, String content, User user) throws NotFoundException;
+    Review addRating(Long bookId, int rating, String content) throws NotFoundException, Exception;
 }

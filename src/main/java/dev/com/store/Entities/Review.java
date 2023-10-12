@@ -35,7 +35,7 @@ public class Review {
     private Book book;
 
     @Column
-    private @NotBlank int rating;
+    private int rating;
 
     @Column(length = 3000)
     private String content;

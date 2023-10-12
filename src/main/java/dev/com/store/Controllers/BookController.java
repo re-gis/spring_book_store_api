@@ -18,6 +18,7 @@ import dev.com.store.Entities.Review;
 import dev.com.store.ServiceImpl.BookServiceImpl;
 import dev.com.store.dtos.AddRatingDto;
 import dev.com.store.dtos.CreateBookDto;
+import dev.com.store.dtos.NewStockDto;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -27,10 +28,9 @@ public class BookController {
     private final BookServiceImpl bookServiceImpl;
 
     @PostMapping("/save")
-    public ResponseEntity<Book> saveBook(@RequestBody CreateBookDto dto) {
-        Book book = bookServiceImpl.saveBook(dto);
+    public ResponseEntity<?> saveBook(@RequestBody CreateBookDto dto) {
         return ResponseEntity
-                .ok(book);
+                .ok(bookServiceImpl.saveBook(dto));
     }
 
     @GetMapping("/{id}")
@@ -63,15 +63,15 @@ public class BookController {
     }
 
     @PutMapping("/stock/update/{id}")
-    public ResponseEntity<String> updateBookStock(@PathVariable("id") Long id, @RequestBody Long newStock)
+    public ResponseEntity<String> updateBookStock(@PathVariable("id") Long id, @RequestBody NewStockDto newStockDto)
             throws NotFoundException {
-        return ResponseEntity.ok(bookServiceImpl.updateBookStock(id, newStock));
+        return ResponseEntity.ok(bookServiceImpl.updateBookStock(id, newStockDto.getNewStock()));
     }
 
     @PostMapping("/rating/add")
-    public ResponseEntity<Review> addRating(@RequestBody AddRatingDto dto) throws NotFoundException {
+    public ResponseEntity<Review> addRating(@RequestBody AddRatingDto dto) throws NotFoundException, Exception {
         return ResponseEntity
-                .ok(bookServiceImpl.addRating(dto.getBookId(), dto.getRating(), dto.getContent(), dto.getUser()));
+                .ok(bookServiceImpl.addRating(dto.getBookId(), dto.getRating(), dto.getContent()));
     }
 
 }

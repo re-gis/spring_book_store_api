@@ -19,43 +19,52 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
+        private final UserRepository userRepository;
+        private final PasswordEncoder passwordEncoder;
+        private final JwtService jwtService;
+        private final AuthenticationManager authenticationManager;
 
-    public ApiResponse register(@NotNull RegisterRequest registerRequest) {
-        var user = User.builder()
-                .name(registerRequest.getName())
-                .email(registerRequest.getEmail())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .role(URole.ROLE_USER)
-                .build();
+        public ApiResponse register(@NotNull RegisterRequest registerRequest) {
+                var eUser = userRepository.findByEmail(registerRequest.getEmail());
+                if (eUser.isPresent()) {
+                        return ApiResponse.builder()
+                                        .message("User already exists!")
+                                        .success(false)
+                                        .build();
+                }
+                var user = User.builder()
+                                .name(registerRequest.getName())
+                                .email(registerRequest.getEmail())
+                                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                                .role(URole.ROLE_USER)
+                                .build();
 
-        userRepository.save(user);
-        var token = jwtService.generateToken(user);
-        return ApiResponse.builder()
-                .data(user)
-                .token(token)
-                .success(true)
-                .message("User registered successfully!")
-                .build();
-    }
+                userRepository.save(user);
+                var token = jwtService.generateToken(user);
+                return ApiResponse.builder()
+                                .data(user)
+                                .token(token)
+                                .success(true)
+                                .message("User registered successfully!")
+                                .build();
+        }
 
-    public ApiResponse authenticate(@NotNull LoginRequest loginRequest) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        public ApiResponse authenticate(@NotNull LoginRequest loginRequest) {
+                authenticationManager.authenticate(
+                                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
+                                                loginRequest.getPassword()));
 
-        var user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found!", null, null)));
+                var user = userRepository.findByEmail(loginRequest.getEmail())
+                                .orElseThrow(() -> new UsernameNotFoundException(
+                                                String.format("User %s not found!", null, null)));
 
-        var token = jwtService.generateToken(user);
-        return ApiResponse.builder()
-                .token(token)
-                .success(true)
-                .message("User logged in successfully!")
-                .data(user)
-                .build();
+                var token = jwtService.generateToken(user);
+                return ApiResponse.builder()
+                                .token(token)
+                                .success(true)
+                                .message("User logged in successfully!")
+                                .data(user)
+                                .build();
 
-    }
+        }
 }

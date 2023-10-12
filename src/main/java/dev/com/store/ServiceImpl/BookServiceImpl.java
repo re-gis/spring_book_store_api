@@ -13,6 +13,7 @@ import dev.com.store.Repository.BookRepo;
 import dev.com.store.Repository.ReviewRepo;
 import dev.com.store.Services.BookService;
 import dev.com.store.dtos.CreateBookDto;
+import dev.com.store.payload.ApiResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
@@ -21,13 +22,17 @@ import lombok.RequiredArgsConstructor;
 public class BookServiceImpl implements BookService {
     private final BookRepo bookRepo;
     private final ReviewRepo reviewRepo;
+    private final UserServiceImpl userServiceImpl;
 
     @Override
-    public Book saveBook(@NotNull CreateBookDto dto) {
+    public ApiResponse saveBook(@NotNull CreateBookDto dto) {
         // check if book exists
         Optional<Book> eBook = bookRepo.findByIsbn(dto.getIsbn());
         if (eBook.isPresent()) {
-            throw new IllegalArgumentException("Book already saved...");
+            return ApiResponse.builder()
+                    .success(false)
+                    .message("Book already exists!")
+                    .build();
         }
         Book book = new Book();
         book.setTitle(dto.getTitle());
@@ -36,7 +41,13 @@ public class BookServiceImpl implements BookService {
         book.setIsbn(dto.getIsbn());
         book.setPrice(dto.getPrice());
         book.setStock(dto.getStock());
-        return bookRepo.save(book);
+
+        Book savedBook = bookRepo.save(book);
+        return ApiResponse.builder()
+                .message("Book saved successfully!")
+                .data(savedBook)
+                .success(true)
+                .build();
     }
 
     @Override
@@ -59,9 +70,6 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> findBooksByAuthor(String author) throws NotFoundException {
         List<Book> books = bookRepo.findByAuthorContainingIgnoreCase(author);
-        if (books.isEmpty()) {
-            throw new NotFoundException();
-        }
         return books;
     }
 
@@ -92,9 +100,12 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Review addRating(Long bookId, int rating, String content, User user) throws NotFoundException {
+    public Review addRating(Long bookId, int rating, String content) throws NotFoundException, Exception {
         Book book = bookRepo.findById(bookId)
                 .orElseThrow(() -> new NotFoundException());
+
+        // get logged in user
+        User user = userServiceImpl.getLoggedInUser();
 
         Optional<Review> existingReview = reviewRepo.findByBookAndUser(book, user);
         if (existingReview.isPresent()) {

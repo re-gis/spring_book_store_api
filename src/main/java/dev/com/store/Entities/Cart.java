@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -32,6 +34,7 @@ public class Cart {
     private long id;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -47,7 +50,7 @@ public class Cart {
         item.setCart(null);
     }
 
-    public void addCartItem(CartItem item) {
+    public void setCartItem(CartItem item) {
         cartItems.add(item);
         item.setCart(this);
     }

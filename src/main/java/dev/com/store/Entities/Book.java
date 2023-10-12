@@ -1,7 +1,6 @@
 package dev.com.store.Entities;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;

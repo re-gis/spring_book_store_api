@@ -7,12 +7,9 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import dev.com.store.Entities.User;
-import dev.com.store.Repository.UserRepository;
 
 import java.security.Key;
 import java.util.Date;
@@ -23,7 +20,6 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class JwtService {
-    private final UserRepository userRepository;
     private static final String SECRET_KEY = "be4a42905e2ff411f3ff96b572307bd60d10c0c4e72ee5153c982c7ea2791b8ac1192b22909b44d91ccd793d37ffe3d64cee10dad720a64f2eb679db56c14edd";
 
     public String extractUserEmail(String token) {

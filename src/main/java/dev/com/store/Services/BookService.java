@@ -6,7 +6,6 @@ import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 
 import dev.com.store.Entities.Book;
 import dev.com.store.Entities.Review;
-import dev.com.store.Entities.User;
 import dev.com.store.dtos.CreateBookDto;
 import dev.com.store.payload.ApiResponse;
 

@@ -13,11 +13,13 @@ import dev.com.store.Entities.Book;
 import dev.com.store.Entities.Cart;
 import dev.com.store.Entities.CartItem;
 import dev.com.store.Entities.Order;
+import dev.com.store.Entities.OrderItem;
 import dev.com.store.Entities.User;
 import dev.com.store.Enums.OStatus;
 import dev.com.store.Repository.BookRepo;
 import dev.com.store.Repository.CartItemRepo;
 import dev.com.store.Repository.CartRepo;
+import dev.com.store.Repository.OrderRepo;
 import dev.com.store.Services.CartService;
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +30,7 @@ public class CartServiceImp implements CartService {
     private final CartItemRepo cartItemRepo;
     private final BookRepo bookRepo;
     private final UserServiceImpl userServiceImpl;
+    private final OrderRepo orderRepo;
 
     public String addBookToCart(Long bookId, int quantity) throws Exception, NotFoundException {
         User loggedUser = userServiceImpl.getLoggedInUser();
@@ -117,7 +120,7 @@ public class CartServiceImp implements CartService {
     }
 
     public String checkout() throws NotFoundException, Exception {
-        List<Order> orders = new ArrayList<>();
+        List<OrderItem> orderItems = new ArrayList<>();
         // get cart of logged user
         User user = userServiceImpl.getLoggedInUser();
         Optional<Cart> uCart = cartRepo.findByUserId(user.getId());
@@ -126,6 +129,7 @@ public class CartServiceImp implements CartService {
         }
         Cart cart = uCart.get();
         List<CartItem> cartItems = cart.getCartItems();
+        Order order = new Order();
 
         for (CartItem cartItem : cartItems) {
             Book book = bookRepo.findById(cartItem.getBook().getId())
@@ -136,11 +140,20 @@ public class CartServiceImp implements CartService {
             }
             // Update the book stock
             book.setStock(book.getStock() - cartItem.getQuantity());
+            OrderItem orderItem = new OrderItem();
+            orderItem.setBook(cartItem.getBook());
+            orderItem.setOrder(order);
+            orderItem.setPrice(cartItem.getPrice());
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItems.add(0, orderItem);
 
-            Order order = new Order();
             order.setUser(user);
             order.setOrderStatus(OStatus.PENDING);
+            order.setOrderItems(orderItems);
+
         }
-        return "";
+        orderRepo.save(order);
+        cartItems.clear();
+        return "Order had been sent...";
     }
 }

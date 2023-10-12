@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ public class Order {
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @Transient
-    public double getTotalPrice() {
-        return orderItems.stream().mapToDouble(OrderItem::getTotalPrice).sum();
+    public BigDecimal getTotalPrice() {
+        return orderItems.stream().map(OrderItem::getTotalPrice).reduce(BigDecimal.ZERO,BigDecimal::add);
     }
 }

@@ -40,4 +40,9 @@ public class CartController {
         return ResponseEntity.ok(cartService.removeBookFromCart(removeFromCartDto.getBookId()));
     }
 
+    @PostMapping("/checkout")
+    public ResponseEntity<String> checkout() throws NotFoundException, Exception {
+        return ResponseEntity.ok(cartService.checkout());
+    }
+
 }

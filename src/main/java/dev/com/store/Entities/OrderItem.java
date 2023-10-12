@@ -1,5 +1,7 @@
 package dev.com.store.Entities;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -37,10 +39,10 @@ public class OrderItem {
     private int quantity;
 
     @Column
-    private double price;
+    private BigDecimal price;
 
-    public double getTotalPrice() {
-        return this.price * this.quantity;
+    public BigDecimal getTotalPrice() {
+        return order.getOrderItems().stream().map(OrderItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 }
